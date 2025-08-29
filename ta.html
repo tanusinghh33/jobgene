@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JobGene - Internship Generator</title>
+<style>
+    body {
+font-family: Arial, sans-serif;
+background: #f4f6f9;
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+margin: 0;
+    }
+
+    .container {
+background: white;
+padding: 30px;
+border-radius: 15px;
+box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+width: 350px;
+text-align: center;
+    }
+
+    h1 {
+color: #007BFF;
+    }
+
+    input {
+width: 90%;
+padding: 10px;
+margin: 8px 0;
+border-radius: 8px;
+border: 1px solid #ccc;
+    }
+
+    button {
+padding: 10px 15px;
+border: none;
+border-radius: 8px;
+background: #007BFF;
+color: white;
+cursor: pointer;
+margin-top: 10px;
+    }
+
+    button:hover {
+background: #0056b3;
+    }
+
+    #internship-result {
+margin-top: 20px;
+padding: 15px;
+border-radius: 10px;
+background: #f1f1f1;
+text-align: left;
+    }
+
+    #login-msg {
+color: red;
+font-size: 14px;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>JobGene</h1>
+    <p>Your Internship Generator 🚀</p>
+
+    <!-- Login Section -->
+    <div id="login-section">
+<h2>Login</h2>
+<input type="email" id="email" placeholder="Enter Email">
+<input type="password" id="password" placeholder="Enter Password">
+<button onclick="login()">Login</button>
+<p id="login-msg"></p>
+    </div>
+
+    <!-- Internship Section -->
+    <div id="internship-section" style="display:none;">
+<h2>Generate Internship</h2>
+<button onclick="getInternship()">Find Internship</button>
+<div id="internship-result"></div>
+    </div>
+</div>
+
+<script>
+    const API_URL = "http://localhost:5000/api";
+
+    // Handle Login
+    async function login() {
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
+
+const res = await fetch(`${API_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+});
+
+const data = await res.json();
+document.getElementById("login-msg").innerText = data.message;
+
+if (data.success) {
+        document.getElementById("login-section").style.display = "none";
+        document.getElementById("internship-section").style.display = "block";
+}
+    }
+
+    // Fetch Internship
+    async function getInternship() {
+const res = await fetch(`${API_URL}/internship`);
+const internship = await res.json();
+
+document.getElementById("internship-result").innerHTML = `
+        <h3>${internship.title}</h3>
+        <p><b>Company:</b> ${internship.company}</p>
+        <p><b>Location:</b> ${internship.location}</p>
+        <p><b>Skills Required:</b> ${internship.skills}</p>
+`;
+    }
+</script>
+</body>
+</html>
